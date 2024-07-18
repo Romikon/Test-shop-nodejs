@@ -35,7 +35,7 @@ services:
     ports:
       - "3001:3001"
     environment:
-      DB_HOST: localhost
+      DB_HOST: postgres
       DB_NAME: shop
       DB_USER: admin
       DB_PASSWORD: 123123

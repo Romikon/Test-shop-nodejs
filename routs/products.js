@@ -2,7 +2,7 @@
 const express = require("express")
 const router = express.Router()
 const productService = require('../services/products');
-//const redisClient = require('../config/redisConnect.js')
+const redisClient = require('../config/redisConnect.js')
 
 function dataValidation(values) {
   if (typeof (values.name) !== "string") {
@@ -26,13 +26,13 @@ router.get("/", async (req, res) => {
   const page = parseInt(req.query.page) || 0;
   const limit = parseInt(req.query.limit) || 5;
   try {
-    // const products = await redisClient.get('products');
-    // if (products) {
-    //   return res.send(JSON.parse(products));
-    // }
+    const products = await redisClient.get('products');
+    if (products) {
+      return res.send(JSON.parse(products));
+    }
 
     const result = await productService.getAllProducts(page, limit);
-    //await redisClient.setEx('products', 3600, JSON.stringify(result));
+    await redisClient.setEx('products', 3600, JSON.stringify(result));
 
     return res.send(result);
 

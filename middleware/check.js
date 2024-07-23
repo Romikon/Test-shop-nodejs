@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 const UserRepository = require('../repositories/users');
 
-const check = (req, res, next) => {
+const check = async (req, res, next) => {
     const authHeader = req.get('Authorization');
 
     const token = authHeader.split(' ')[1];
@@ -13,8 +13,9 @@ const check = (req, res, next) => {
             return res.status(403);
         }
     }
-    const user_copy = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET);
-    const user = UserRepository.findUser(user_copy)
+
+    const user_copy = await jwt.decode(token, process.env.ACCESS_TOKEN_SECRET);
+    const user = await UserRepository.findUser(user_copy.email)
     req.user = user;
     next();
 }

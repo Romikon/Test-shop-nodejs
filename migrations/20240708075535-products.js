@@ -6,7 +6,6 @@ const sequelize = new Sequelize('sqlite::memory:');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await sequelize.sync();
     await queryInterface.createTable("products", {
       id: {
         type: DataTypes.INTEGER,

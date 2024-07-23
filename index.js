@@ -3,23 +3,21 @@ const express = require('express');
 require('dotenv').config();
 const app = express();
 const bodyParser = require('body-parser');
+const middleware = require('./middleware/check.js');
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
-const middleware = require('./middleware/check');
 
 app.use(bodyParser.json());
 
 const port = process.env.PORT || 3001;
 
+
+app.use('/products', middleware.check, require('./routs/products'))
+   .use('/users', middleware.check, require('./routs/users.js'))
+   .use('/order',middleware.check, require("./routs/orders.js"))
+   .use('/', require("./routs/authentication.js"))
+
 app.listen(port, () => {
     console.log(`http://localhost:${port}`)
   })
-
-const productsRoute = require("./routs/products.js")
-const usersRoute = require("./routs/users.js")
-const orderRoute = require("./routs/orders.js")
-app.use('/products', middleware.check, productsRoute)
-app.use('/users', usersRoute)
-app.use('/buy',middleware.check, orderRoute)

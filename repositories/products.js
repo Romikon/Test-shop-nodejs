@@ -3,6 +3,7 @@ const { Op } = require('sequelize');
 
 class ProductRepository {
     async createProduct(data) {
+        console.log(data)
         return Product.create({
             name: data.name,
             amount: data.amount,
@@ -16,6 +17,12 @@ class ProductRepository {
 
     async findProduct(data) {
         return Product.findOne({ where: { name: data.name } })
+    }
+
+    async findProductByName(productName, orderAmount) {
+        const product = Product.findOne({ where: { name: productName } })
+        const newAmount = product.amount - orderAmount
+        return product.update({ amount: newAmount })
     }
 
     async getAllProducts(page, limit) {

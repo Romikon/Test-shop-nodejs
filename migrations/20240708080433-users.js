@@ -6,7 +6,6 @@ const sequelize = new Sequelize('sqlite::memory:');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await sequelize.sync();
     await queryInterface.createTable("users", {
       id: {
         type: DataTypes.INTEGER,
@@ -14,16 +13,20 @@ module.exports = {
         primaryKey: true
       },
       email: {
-        type: DataTypes.STRING(1024)
+        type: DataTypes.STRING(1024),
+        allowNull: false
       },
       sex: {
-        type: DataTypes.STRING(10)
+        type: DataTypes.STRING(10),
+        allowNull: false
       },
       age: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: false
       },
       password: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
       },
       role: {
         type: DataTypes.STRING,

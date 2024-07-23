@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
-const User = require('../models/users');
-const jwt = require('jsonwebtoken');
+const User = require('../models/authentication.js');
+
 
 class UserRepository {
     async createUser(user) {
@@ -12,12 +12,32 @@ class UserRepository {
         });
     }
 
-    async findUser(user) {
-        return User.findOne({ where: { email: user.email } })
+    async findUser(userEmail) {
+        return User.findOne({ where: { email: userEmail } })
     }
 
-    async generateToken(user) {
-        return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "10h" })
+    async getAllUsers(){
+        //console.log(User.findAll())
+        return User.findAll()
+    }
+
+    async findUserById(id){
+        return User.findOne({where: {id: id}})
+    }
+
+    async updateUser(userId, user){
+        const userToUpdate = await this.findUserById(userId)
+        return userToUpdate.update({
+            email: user.email,
+            sex: user.sex,
+            age: user.age,
+            password: user.password
+        })
+    }
+
+    async deleteUser(userId){
+        const userToDelete = await this.findUserById(userId)
+        return userToDelete.destroy();
     }
 }
 

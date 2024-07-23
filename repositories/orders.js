@@ -8,6 +8,21 @@ class OrderRepository {
             product_amount: amount
         })
     }
+    async getAllOrders(){
+        return Order.findAll()
+    }
+
+    async updateProduct(productToUpdate, newParams){
+        return productToUpdate.update({ user_id: newParams.user_id, product_id: newParams.product_id, product_amount: newParams.product_amount})
+    }
+
+    async findOrder(order_id){
+        return Order.findOne({where: { id: order_id}})
+    }
+
+    async deleteOrder(orderId){
+        return Order.destroy({where: {id: orderId}})
+    }
 }
 
 module.exports = new OrderRepository();

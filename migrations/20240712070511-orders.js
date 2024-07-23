@@ -8,7 +8,6 @@ const sequelize = new Sequelize('sqlite::memory:');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await sequelize.sync();
     await queryInterface.createTable("orders", {
       id: {
         type: DataTypes.INTEGER,

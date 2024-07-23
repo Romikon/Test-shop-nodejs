@@ -1,36 +1,84 @@
 require('dotenv').config();
 const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const userService = require('../servises/users');
+const userService = require('../services/users.js');
 
-router.post("/registration", async (req, res) => {
-  const { email, sex, age, password } = req.body
+router.get("/", async (req, res) => {
+    if (await req.user.role !== "admin") {
+        res.send("You are not admin!")
+    }
 
-  const hashPass = bcrypt.hashSync(password, 7)
-  const userData = { email: email, sex: sex, age: age, password: hashPass }
+    const allUsers = await userService.getAllUsers()
+    if (allUsers) {
+        res.send(allUsers)
+    }
+    else {
+        res.send("Something went wrong!")
+    }
 
-  const inBase = await userService.addUser(userData)
-  console.log(inBase)
-  if (inBase) {
-    res.send("User with that email is already exist!")
-  }
-  else {
-    res.send("User added!")
-  }
-});
+})
 
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body
-  const user = { email: email, password: password }
+router.get("/:id", async (req, res) => {
+    if (await req.user.role !== "admin") {
+        res.send("You are not admin!")
+    }
 
-  const token = await userService.loginUser(user)
-  console.log(token)
+    const userId = req.params
+    const user = await userService.findUserById(userId.id)
+    if (user) {
+        res.send(user)
+    }
+    else {
+        res.send("There is no user with that id!")
+    }
+})
 
-  if (!token) {
-    res.send("Wrong email or password!")
-  }
-  res.send(token)
-});
+router.post("/", async (req, res) => {
+    if (await req.user.role !== "admin") {
+        res.send("You are not admin!")
+    }
 
-module.exports = router;
+    const { email, sex, age, password } = req.body
+    const newPass = await userService.createPassword(password)
+    const userData = { email: email, sex: sex, age: age, password: newPass }
+    if (userService.addUser(userData)) {
+        res.send("User added!")
+    }
+    else {
+        res.send("Something went wrong!")
+    }
+})
+
+router.put("/:id", async (req, res) => {
+    if (await req.user.role !== "admin") {
+        res.send("You are not admin!")
+    }
+
+    const userId = req.params
+    const newPass = await userService.createPassword(req.body.password)
+
+    const newData = { email: req.body.email, sex: req.body.sex, age: req.body.age, password: newPass }
+
+    if (userService.updateUser(userId.id, newData)) {
+        res.send(`User with id:${userId.id} was updated!`)
+    }
+    else {
+        res.send("Something went wrong!")
+    }
+})
+
+router.delete("/:id", async (req, res) => {
+    if (await req.user.role !== "admin") {
+        res.send("You are not admin!")
+    }
+
+    const userId = req.params
+    if (userService.deleteUser(userId.id)) {
+        res.send(`User with id:${userId.id} was deleted!`)
+    }
+    else {
+        res.send(`User with id:${userId.id} does not exist`)
+    }
+})
+
+module.exports = router

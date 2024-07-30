@@ -3,7 +3,6 @@ const { Op } = require('sequelize');
 
 class ProductRepository {
     async createProduct(data) {
-        console.log(data)
         return Product.create({
             name: data.name,
             amount: data.amount,
@@ -19,8 +18,8 @@ class ProductRepository {
         return Product.findOne({ where: { name: data.name } })
     }
 
-    async findProductByName(productName, orderAmount) {
-        const product = Product.findOne({ where: { name: productName } })
+    async updatePrice(productName, orderAmount) {
+        const product = await Product.findOne({ where: { name: productName } })
         const newAmount = product.amount - orderAmount
         return product.update({ amount: newAmount })
     }
@@ -43,7 +42,6 @@ class ProductRepository {
 
     async deleteProduct(id) {
         const product = await Product.findByPk(id); 2
-        console.log(product)
         if (!product) {
             throw new Error('User not found');
         }

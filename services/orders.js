@@ -2,7 +2,7 @@ const orderRepository = require('../repositories/orders');
 const productService = require('../services/products');
 
 class OrderService {
-    async checkOrder(data, userId) {
+    async createOrder(data, userId) {
         const amount = data.amount
         const product = await productService.findProduct(data)
         if (!product) {
@@ -13,6 +13,7 @@ class OrderService {
         }
         else {
             await orderRepository.createOrder(product, amount, userId)
+            await productService.updatePrice(data.name, amount)
             return true
         }
     }
@@ -21,9 +22,9 @@ class OrderService {
         orderRepository.getAllOrders()
     }
 
-    async updateProduct(order_id, newParams){
-        const productToUpdate = await orderRepository.findOrder(order_id);
-        return orderRepository.updateProduct(productToUpdate, newParams)
+    async updateOrder(order_id, newParams){
+        const orderToUpdate = await orderRepository.findOrder(order_id);
+        return orderRepository.updateOrder(orderToUpdate, newParams)
     }
 
     async deleteOrder(orderId){

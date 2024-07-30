@@ -3,7 +3,7 @@ const express = require('express');
 require('dotenv').config();
 const app = express();
 const bodyParser = require('body-parser');
-const middleware = require('./middleware/check.js');
+const middleware = require('./middleware/validateToken.js');
 app.use(bodyParser.urlencoded({
     extended: true
 }));

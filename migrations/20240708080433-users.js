@@ -2,7 +2,7 @@
 'use strict';
 
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('sqlite::memory:');
+const sequelize = new Sequelize("postgres::memory");
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {

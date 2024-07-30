@@ -3,7 +3,7 @@
 
 
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('sqlite::memory:');
+const sequelize = new Sequelize("postgres::memory");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -16,12 +16,23 @@ module.exports = {
       },
       user_id: {
         type: DataTypes.INTEGER,
-        primaryKey: true
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        onDelete: 'CASCADE'
       },
       product_id: {
         type: DataTypes.INTEGER,
-        primaryKey: true
+        allowNull: false,
+        references: {
+          model: 'products',
+          key: 'id'
+        },
+        onDelete: 'CASCADE'
       },
+
       product_amount: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -40,6 +51,8 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
+    await queryInterface.removeConstraint('orders', 'orders_product_id_fkey');
+    await queryInterface.removeConstraint('orders', 'orders_user_id_fkey');
     await queryInterface.dropTable('orders');
   }
 };

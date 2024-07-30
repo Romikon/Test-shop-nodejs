@@ -12,8 +12,8 @@ class OrderRepository {
         return Order.findAll()
     }
 
-    async updateProduct(productToUpdate, newParams){
-        return productToUpdate.update({ user_id: newParams.user_id, product_id: newParams.product_id, product_amount: newParams.product_amount})
+    async updateOrder(orderToUpdate, newParams){
+        return orderToUpdate.update({ user_id: newParams.user_id, product_id: newParams.product_id, product_amount: newParams.product_amount})
     }
 
     async findOrder(order_id){

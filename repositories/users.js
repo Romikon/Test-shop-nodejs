@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const User = require('../models/authentication.js');
+const User = require('../models/users.js');
 
 
 class UserRepository {
@@ -17,7 +17,6 @@ class UserRepository {
     }
 
     async getAllUsers(){
-        //console.log(User.findAll())
         return User.findAll()
     }
 

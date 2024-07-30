@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const UserRepository = require('../repositories/authentication.js');
+const UserRepository = require('../repositories/users.js');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
@@ -8,7 +8,7 @@ async function generateToken(email) {
     return jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "10h" })
 }
 
-class UserService {
+class AuthenticationService {
     async addUser(user) {
         const userEmail = await UserRepository.findUser(user.email)
         if (userEmail) {
@@ -32,9 +32,7 @@ class UserService {
                 }
 
                 if (result) {
-                    console.log("Same");
                     const accessToken = await generateToken(email)
-                    //console.log(accessToken)
                     return resolve(accessToken);
                 } else {
                     return false;
@@ -48,4 +46,4 @@ class UserService {
     }
 }
 
-module.exports = new UserService();
+module.exports = new AuthenticationService();

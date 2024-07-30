@@ -1,23 +1,15 @@
 const express = require("express")
 const router = express.Router()
-const findProduct = require('../services/products');
 const orderService = require('../services/orders');
 
 router.post("/", async (req, res) => {
-    const userId = await req.user
-    const { name, amount } = req.body
-    const product = { name: name, amount: amount }
+    const userId = req.user
+    const product = { name: req.body.name, amount: req.body.amount }
 
-    const inBase = await orderService.checkOrder(product, userId.id)
-
-    findProduct.findProductByName(name, amount)
-
-    if (inBase) {
-        res.send("Product added!")
+    if (! await orderService.createOrder(product, userId.id)) {
+        res.send("Order not added!")
     }
-    else {
-        res.send("Product not added!")
-    }
+    res.send("Order added!")
 })
 
 router.get("/", async (req, res) => {
@@ -31,31 +23,21 @@ router.get("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
     const order_id = req.params
-    const { user_id, product_id, product_amount } = req.body
-    const product = { user_id: user_id, product_id: product_id, product_amount: product_amount }
+    const product = { user_id: req.body.user_id, product_id: req.body.product_id, product_amount: req.body.product_amount }
 
-    const updatedProduct = await orderService.updateProduct(order_id, product)
-
-    if (updatedProduct) {
-        res.send("Updated!")
-    }
-    else {
+    if (!await orderService.updateOrder(order_id, product)) {
         res.send("Something went wrong")
     }
+    res.send("Updated!")
 })
 
 router.delete("/:id", async (req, res) => {
     const orderId = req.params
-    const orderToDelete = await orderService.deleteOrder(orderId)
     
-    if(orderToDelete){
-        res.send("Deleted!")
-    }
-    else{
+    if(!await orderService.deleteOrder(orderId)){
         res.send("Something went wrong")
     }
+    res.send("Deleted!")
 })
-
-
 
 module.exports = router;
